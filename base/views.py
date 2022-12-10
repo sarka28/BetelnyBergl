@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -5,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, FormView, CreateView, UpdateView, DeleteView
 
-from base.forms import RoomForm
+from base.forms import RoomForm, LOGGER
 from base.models import Room, Message
 
 
@@ -23,8 +25,9 @@ class RoomsView(ListView):
     template_name = 'base/rooms.html'
     model = Room
 
-
+@login_required #jen pro view typu funkce a ne pro třídu
 def room(request, pk):
+    LOGGER.warning(request.method)
     room = Room.objects.get(id=pk)
 
     if request.method == 'POST':
@@ -42,7 +45,7 @@ def room(request, pk):
     return render(request, template_name='base/room.html', context=context)
 
 
-class RoomCreateView(CreateView):
+class RoomCreateView(LoginRequiredMixin, CreateView):
     template_name = 'base/room_form.html'
     extra_context = {'title': 'CREATE !!!'}
     form_class = RoomForm
