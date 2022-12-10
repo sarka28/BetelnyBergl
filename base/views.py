@@ -48,6 +48,11 @@ class RoomCreateView(CreateView):
     form_class = RoomForm
     success_url = reverse_lazy('rooms')
 
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        LOGGER.warning(form.cleaned_data)
+        return result
+
     # def form_valid(self, form):
     #     cleaned_data = form.cleaned_data
     #     Room.objects.create(
