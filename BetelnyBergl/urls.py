@@ -13,14 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import handler403
 from django.contrib import admin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 from django.urls import path
 
+import accounts.views
 import base.views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('hello/', base.views.hello),
     path('', base.views.RoomsView.as_view(), name='rooms'),
     path('room/detail/<pk>/', base.views.room, name='room'),
@@ -30,6 +32,12 @@ urlpatterns = [
 
     path('accounts/login/', LoginView.as_view(), name='login'),
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
-    path('accounts/password_change/', PasswordChangeView.as_view(), name='password_change')
-
+    path('accounts/password_change/', PasswordChangeView.as_view(template_name="registration/password_change.html"),
+         name='password_change'),
+    path('accounts/password_change/done/',
+         PasswordChangeDoneView.as_view(template_name="registration/password_change_done.html"),
+         name='password_change_done'),
+    path('accounts/signup/', accounts.views.SignUpView.as_view(), name='signup'),
 ]
+
+handler403 = 'base.views.handler403'
