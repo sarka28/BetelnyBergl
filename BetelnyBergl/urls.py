@@ -22,7 +22,7 @@ import accounts.views
 import base.views
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('hello/', base.views.hello),
     path('', base.views.RoomsView.as_view(), name='rooms'),
     path('room/detail/<pk>/', base.views.room, name='room'),

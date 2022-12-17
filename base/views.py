@@ -34,7 +34,7 @@ def room(request, pk):
     room = Room.objects.get(id=pk)
 
     if request.method == 'POST':
-        if request.user.has_perms('base.add_message'):
+        if request.user.has_perm('base.add_message'):
             Message.objects.create(
                 user=request.user,
                 room=room,
