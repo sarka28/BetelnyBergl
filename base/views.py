@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -15,6 +16,16 @@ def hello(request):
     s = request.GET.get('s', '')
     return HttpResponse(f"Ahoj {s}!!!")
 
+@login_required
+@permission_required(['base.view_room'])
+def search(request):
+    q = request.GET.get('q', '')
+    rooms = Room.objects.filter(
+        Q(name__icontains=q) |
+        Q(description__icontains=q)
+    )
+    context = {'object_list': rooms}
+    return render(request, 'base/rooms.html', context)
 
 # def rooms(request):
 #    rooms = Room.objects.all()
